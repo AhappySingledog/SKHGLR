@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>主界面</title>
+    <link href="../../../js/plugs/layui/css/layui.css" rel="stylesheet" />
+    <link href="../css/index.css" rel="stylesheet" />
+    <script src="../../../js/core/jquery.js"></script>
+    <script src="../../../js/plugs/layui/layui.js"></script>
+    <script src="../js/tabs.js"></script>
+    <script src="../js/meunbar.js"></script>
+    <script src="../js/index.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <div class="sidebar">
+        </div>
+        <div class="content">
+            <div class="header" style="background: #393D49">
+                <i id="expend" class="layui-icon" style="line-height: 64px; font-size: 30px;color: white;margin: 17px">&#xe65a;</i>
+                <ul class="layui-nav" style="text-align: right;float: right">
+                    <li id="btns" class="layui-nav-item">
+                    </li>
+                    <li class="layui-nav-item">
+                        <a><img src="http://t.cn/RCzsdCq" class="layui-nav-img">我</a>
+                        <dl class="layui-nav-child">
+                            <dd><a onclick="publish('updatePw')">修改密码</a></dd>
+                            <dd><a onclick="publish('safeExit')">安全退出</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+            <div class="main">
+                <div class="layui-tab layui-tab-brief layui-me-tab" lay-allowclose="true" lay-filter="main-tabs">
+                    <ul class="layui-tab-title"></ul>
+                    <div class="layui-tab-content layui-me-tab-content">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

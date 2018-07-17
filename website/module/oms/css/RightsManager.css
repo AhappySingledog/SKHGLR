@@ -1,0 +1,77 @@
+﻿html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    user-select: none;
+}
+
+.layout {
+    height: 100%;
+    padding: 2px;
+}
+
+.mcontainer {
+    display: flex;
+    flex-flow: row;
+    height: 100%;
+    /*padding: 4px;*/
+}
+
+.msider {
+    width: 250px;
+    margin-right: 4px;
+    position: relative;
+    border: 1px solid rgb(217, 217, 217);
+}
+
+    .msider > * {
+        width: 100%;
+        position: absolute;
+        height: 100%;
+    }
+
+.mcontent {
+    flex-grow: 1;
+    position: relative;
+    border: 1px solid rgb(217, 217, 217);
+}
+
+    .mcontent > * {
+        width: 100%;
+        position: absolute;
+        height: 100%;
+    }
+
+form {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+    form > div {
+        padding: 4px;
+    }
+
+.mbox {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    padding: 4px;
+}
+
+.mbox_body {
+    position: relative;
+    flex-grow: 1;
+}
+
+    .mbox_body > * {
+        width: 100%;
+        position: absolute;
+        height: 100%;
+    }
+.mbox_footer {
+    height: 34px;
+    padding: 4px 0;
+    text-align: right;
+}

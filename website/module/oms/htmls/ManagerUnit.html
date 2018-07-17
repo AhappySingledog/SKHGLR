@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>组织单元管理</title>
+    <script src="../../../js/core/jquery.js"></script>
+    <script src="../../../js/plugs/layui/layui.js"></script>
+    <link href="../../../js/plugs/layui/css/layui.css" rel="stylesheet" />
+    <link href="../../../js/plugs/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <script src="../../../js/plugs/zTree/js/jquery.ztree.all-3.5.js"></script>
+    <link href="../../../js/plugs/bootstrap-3.3.5/css/bootstrap.css" rel="stylesheet" />
+    <script src="../../../js/plugs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+    <script src="../../../js/plugs/BootstrapMenu/BootstrapMenu.min.js"></script>
+    <link href="../css/ManagerUnit.css" rel="stylesheet" />
+    <link href="../css/layui.css" rel="stylesheet" />
+    <script src="../jslibs/OmsCfg.js"></script>
+    <script src="../jslibs/ManagerUnit.js"></script>
+    <script type="text/html" id="userbar">
+        <div style="margin: 0 -10px; text-align:center">
+            <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="update">修改</a>
+            <a class="layui-btn layui-btn-mini" lay-event="relevance">关联</a>
+            <a class="layui-btn layui-btn-mini layui-btn-warm" lay-event="reset">重置密码</a>
+            <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="delete">删除</a>
+        </div>
+    </script>
+    <script type="text/html" id="rolesibar">
+        <div style="margin: 0 -10px; text-align:center">
+            <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="update">修改</a>
+            <a class="layui-btn layui-btn-mini" lay-event="authority">权限</a>
+            <a class="layui-btn layui-btn-mini layui-btn-warm" lay-event="refsys">系统</a>
+            <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="delete">删除</a>
+        </div>
+    </script>
+</head>
+<body>
+    <div class="layout">
+        <div class="sider">
+            <div>
+                <ul class="nav nav-tabs" style="height: 28px;margin: 2px 2px 0 2px">
+                    <li role="presentation" class="active"><a href="#">行政维度</a></li>
+                </ul>
+                <div style="height: calc(100% - 32px);  border: 1px solid rgb(217, 217, 217);border-top-width: 0; margin: 0 2px 2px 2px; overflow:auto">
+                    <div id="orgtree" class="ztree"></div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div>
+                <ul id="tabList" class="nav nav-tabs" style="height: 28px;margin: 2px 2px 0 2px">
+                    <li role="presentation" class="active"><a href="#dw">单位</a></li>
+                    <li role="presentation"><a href="#gwlb">岗位列表</a></li>
+                    <li role="presentation"><a href="#rylb">人员列表</a></li>
+                    <li role="presentation"><a href="#rolelb">角色列表</a></li>
+                </ul>
+                <div class="tab-content" style="height: calc(100% - 32px);  border: 1px solid rgb(217, 217, 217);border-top-width: 0; margin: 0 2px 2px 2px; overflow:auto">
+                    <div role="tabpanel" class="tab-pane fade in active" id="dw">
+                        <div style="padding: 0 8px">
+                            <form id="unit" class="layui-form" action="">
+                                <div style="text-align: center;width:100%">
+                                    <span style="font-size:40px; color: lightsteelblue; height: 450px;line-height: 450px">请选择组织</span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="rolelb">
+                        <div>
+                            <div id="role">
+                                <div style="text-align: center;width:100%">
+                                    <span style="font-size:40px; color: lightsteelblue; height: 450px;line-height: 450px">请选择组织</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="gwlb">
+                        <div>
+                            <div id="gw">
+                                <div style="text-align: center;width:100%">
+                                    <span style="font-size:40px; color: lightsteelblue; height: 450px;line-height: 450px">请选择组织</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="rylb">
+                        <div>
+                            <div class="queryOper layui-form"></div>
+                            <div id="ry">
+                                <div style="text-align: center; width: 100%">
+                                    <span style="font-size: 40px; color: lightsteelblue; height: 450px; line-height: 450px">请选择组织</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

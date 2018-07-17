@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="../../../js/plugs/layui/layui.js"></script>
+    <link href="../../../js/plugs/layui/css/layui.css" rel="stylesheet" />
+    <link href="../css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <div style="padding: 4px 4px 10px 4px">
+        <form id="form"></form>
+    </div>
+    <script>
+        layui.use(['mform', 'layer', 'jquery'], function (mform, layer, $) {
+            mform.config({ svn: 'OMS_SERVER' });
+            $(document).bind("contextmenu", function (e) { return false; });//禁用右键菜单
+            var old, close = false, params = window._dialog.params || {}, flg = params.where != null,//通过是否有查询条件来判断是添加还是新增 有查询条件，那么认定为更新，没有就算新增
+                form = mform("#form").refTable(params.tname).fields(params.fields || []).setFieldConfig(params.cfg || {}).defualtWidth((100.0 / (params.cols || 2)) + "%").setFiledReq('loading', true).setDataReq(getDreq()).fieldCompleted(complete).render(params.render); //初始化表单内容
+            if (params.alis) form.setAlis(params.alis);
+            $(window).unload(function () { params.close && params.close(close); });
+
+            /**
+             * 请求参数
+             */
+            function getDreq() {
+                return flg ? { svn: 'OMS_SERVER', path: 'QueryData', loading: true, data: { tname: params.tname, where: params.where, page: 1, size: 1 }, update: update } : { loading: true };
+            }
+
+            /**
+             * 更新操作
+             * @param res
+             */
+            function update(res) {
+                return old = $.extend(res.data.datas[0], params.attr || {});
+            }
+
+            /**
+             * 获取完成数据后执行任务
+             */
+            function complete() {
+                form.completed(function () { });
+                if (!flg && params.attr) form.refresh(params.attr);
+                var $div = $('<div style="text-align: center;"/>').appendTo($("#form").parent());
+                if (params.render.enable) {
+                    if (flg) $('<a class="layui-btn layui-btn-small">重置</a>').appendTo($div).click(function() { form.refresh(); });
+                    $('<a class="layui-btn layui-btn-normal layui-btn-small">确认</a>').appendTo($div).click(function() { form.submit(submit);});
+                }
+                $('<a class="layui-btn layui-btn-danger layui-btn-small">关闭</a>').appendTo($div).click(function () { closeLayer(); });
+                if (params.autoSize !== false) iframeAuto2();
+            }
+
+            /**
+             * 提交表单
+             * @param data
+             */
+            function submit(data) {
+                var idx = layer.msg('数据处理中', { icon: 16, shade: 0.03, fixed: true, time: 0 }),
+                    sdata = typeof params.getData == 'function'
+                        ? params.getData(data, old)
+                        : { tname: params.tname, datas: JSON.stringify([old ? $.extend({GID: old.GID || old.gid || old.id}, data): data]) };
+                publish(params.sub || 'getDataX', { svn: params.svn || 'OMS_SERVER', path: params.path || (flg ? "UpdateData" :"AddData"), type: 'post', data: sdata }).then(function (res) {
+                    layer.close(idx);
+                    if (res[0].code === "10000") {
+                        publish('showTopMsg', res[0].message).then(function () { close = true; closeLayer(); });
+                        if (params.token) publish(params.token);
+                        if (typeof params.callBack == 'function') params.callBack(sdata);
+                    }
+                    else
+                        layer.msg(res[0].message);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

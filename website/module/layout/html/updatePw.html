@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../../js/core/jquery.js"></script>
+    <link href="../../../js/plugs/bootstrap-3.3.5/css/bootstrap.css" rel="stylesheet" />
+    <script src="../../../js/plugs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+    <script src="../../../js/plugs/angular.min.js"></script>
+    <script src="../../../js/plugs/dialog/layer.js"></script>
+    <style>
+        html, body {
+            height: auto;
+        }
+
+        td {
+            padding: 4px 4px;
+        }
+
+        .form-control {
+            height: 26px !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" ng-app="cjApp" class="containar" ng-controller="formCtrl">
+        <div class="row" style="padding: 8px;margin: 0">
+            <form>
+                <table>
+                    <tr>
+                        <td><div style="width:60px"><span style="color: red">*</span>原始密码:</div></td>
+                        <td><div style="width:200px"><input ng-disabled="disable" class="form-control ymm input-sm" ng-model="ymm" type="password" placeholder="请输入原始密码" /></div></td>
+                    </tr>
+                    <tr>
+                        <td><div style="width:60px"><span style="color: red">*</span>新密码:</div></td>
+                        <td><div style="width:200px"><input ng-disabled="disable" class="form-control xmm input-sm" ng-model="xmm" type="password" placeholder="请输入新密码" /></div></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="row" style="padding: 8px; margin: 0; text-align: center">
+            <button type="button" class="btn btn-info btn-sm" ng-click="save()">
+                <span class="glyphicon glyphicon-floppy-save"></span>修改
+            </button>
+            <button type="button" class="btn btn-info btn-sm" ng-click="cancel()">
+                <span class="glyphicon glyphicon-share-alt"></span>取消
+            </button>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var app = angular.module('cjApp', []);
+        app.controller('formCtrl',
+            function ($scope) {
+                var ps = window._tool.params;
+                $scope.ymm = "";
+                $scope.xmm = "";
+
+                function check() {
+                    if ($scope.ymm.length < 1)
+                        layer.tips("不能为空", '.ymm');
+                    else if ($scope.xmm.length < 1)
+                        layer.tips("不能为空", '.xmm');
+                    else
+                        return true;
+                    return false;
+                }
+
+                $scope.save = function () {
+                    if (check()) {
+                        var lidx = layer.load(0, { shade: [0.3, '#393D49'] });
+                        publish("getDataX", { path: "updatePw", svn: "OMS_SERVER", data: { username: ps.username, oldpsw: $scope.ymm, newpsw: $scope.xmm } })
+                            .then(function(res) {
+                                layer.close(lidx);
+                                var re = res[0];
+                                if (re.isSuccess) {
+                                    publish("showTopMsg", '修改密码成功!');
+                                    closeLayer();
+                                } else {
+                                    layer.msg(re.msg);
+                                }
+                            });
+                    }
+                }
+
+                $scope.cancel = function () {
+                    closeLayer();
+                }
+            });
+    </script>
+</body>
+</html>

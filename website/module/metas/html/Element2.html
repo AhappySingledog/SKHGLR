@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="../../../js/plugs/layui/layui.js"></script>
+    <link href="../../../js/plugs/layui/css/layui.css" rel="stylesheet" />
+    <link href="../css/layui.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div style="padding: 4px 4px 10px 4px">
+        <form id="form" style="height: 300px;overflow: auto;">
+            <div class="group">
+                <div class="layui-form-item" style="margin-bottom: 4px !important; width:50%">
+                    <label class="layui-form-label" style="width:177px !important">中文船名:</label>
+                    <div class="layui-input-block" style="margin-left:185px !important">
+                        <select id='SHIPNAME_CN' name="SHIPNAME_CN" lay-filter="aihao" style="width: 100%; height: 30px;">
+                            <option value="">--选择--</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="margin-bottom: 4px !important; width:50%">
+                    <label class="layui-form-label" style="width:177px !important">MMSI号:</label>
+                    <div class="layui-input-block" style="margin-left:185px !important">
+                        <input id="MMSI" disabled="disabled" type="text" autocomplete="off" class="layui-input" placeholder="请输入MMSI号" name="MMSI">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="margin-bottom: 4px !important; width:50%">
+                    <label class="layui-form-label" style="width:177px !important">IMO号:</label>
+                    <div class="layui-input-block" style="margin-left:185px !important">
+                        <input id="IMO" disabled="disabled" type="text" autocomplete="off" class="layui-input" placeholder="请输入IMO号" name="IMO">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="margin-bottom: 4px !important; width:50%">
+                    <label class="layui-form-label" style="width:177px !important">当前泊位:</label>
+                    <div class="layui-input-block" style="margin-left:185px !important">
+                        <select id='CURBERTH' name="CURBERTH" lay-filter="aihao" style="width: 100%; height: 30px;">
+                            <option value="">--选择--</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="margin-bottom: 4px !important; width:50%">
+                    <label class="layui-form-label" style="width:177px !important">移泊泊位:</label>
+                    <div class="layui-input-block" style="margin-left:185px !important">
+                        <select id='TARBERTH' name="TARBERTH" lay-filter="aihao" style="width: 100%; height: 30px;">
+                            <option value="">--选择--</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="margin-bottom: 4px !important; width:50%">
+                    <label class="layui-form-label" style="width:177px !important">移泊时间:</label>
+                    <div class="layui-input-block" style="margin-left:185px !important">
+                        <input id="MOVETIME" type="text" autocomplete="off" class="layui-input" placeholder="yyyy-MM-dd HH:mm:ss" name="MOVETIME" dt="datetime"
+                            lay-verify="date" lay-key="1">
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div style="text-align: center;">
+            <a id='yes' class="layui-btn layui-btn-normal layui-btn-small">确认</a>
+            <a id='close' class="layui-btn layui-btn-danger layui-btn-small">关闭</a>
+        </div>
+    </div>
+    <script>
+        layui.use(['mform', 'layer', 'jquery', 'laydate'], function (mform, layer, $, laydate) {
+            $(document).bind("contextmenu", function (e) {
+                return false;
+            }); //禁用右键菜单
+            var old, params = window._dialog.params,
+                svn = params.svn,
+                sub = params.sub,
+                table = params.tname,
+                flg = params.where != null; //通过是否有查询条件来判断是添加还是新增 有查询条件，那么认定为更新，没有就算新增
+            var ships = [];
+            var shipsJson = {};
+            
+            Promise.all([
+                publish('webAction', { svn: 'LOADER_SERVER', path: 'queryTableByWhere', data: { tableName: 'YLMG_SHIP' } }),
+                publish('webAction', { svn: 'LOADER_SERVER', path: 'queryTableByWhere', data: { tableName: 'YLMG_BERTH' } }),
+            ]).then((res) => {
+                ships = res[0][0].data;
+                ships.forEach((e) => {
+                    $('<option value="' + e.SHIPNAME_EN + '"> ' + e.SHIPNAME_CN + '</option>').appendTo($('#SHIPNAME_CN'));
+                    shipsJson[e.SHIPNAME_EN] = e;
+                });
+                $('#SHIPNAME_CN').change(function () {
+                    var key = $('#SHIPNAME_CN option:selected').val();
+                    $('#MMSI').val(shipsJson[key].MMSI);
+                    $('#IMO').val(shipsJson[key].IMO);
+                });
+
+                res[1][0].data.forEach((e) => {
+                    $('<option value="' + e.CODE + '"> ' + e.NAME + '</option>').appendTo($('#CURBERTH'));
+                    $('<option value="' + e.CODE + '"> ' + e.NAME + '</option>').appendTo($('#TARBERTH'));
+                });
+            });
+
+            laydate.render({elem: '#MOVETIME', type: 'datetime'});
+
+            $('#yes').click(function () {
+                var SHIPNAME_CN = $('#SHIPNAME_CN option:selected').val();
+                var CURBERTH = $('#CURBERTH').val();
+                var TARBERTH = $('#TARBERTH').val();
+                var MOVETIME = $('#MOVETIME').val();
+                var cando = true;
+                if (SHIPNAME_CN == '') {
+                    layer.tips('请选择船舶', '#SHIPNAME_CN', { tips: [3, '#F2AE4A'] });
+                    return;
+                }
+                if (CURBERTH == '') {
+                    layer.tips('请填写当前泊位', '#CURBERTH', { tips: [3, '#F2AE4A'] });
+                    return;
+                }
+                if (TARBERTH == '') {
+                    layer.tips('请填写移泊泊位', '#TARBERTH', { tips: [3, '#F2AE4A'] });
+                    return;
+                }
+                if (TARBERTH == CURBERTH) {
+                    layer.tips('移泊泊位不能和当前泊位相同', '#TARBERTH', { tips: [3, '#F2AE4A'] });
+                    return;
+                }
+                if (MOVETIME == '') {
+                    layer.tips('移泊时间不能为空', '#MOVETIME', { tips: [3, '#F2AE4A'] });
+                    return;
+                }
+                if (new Date() > new Date(MOVETIME)) {
+                    layer.tips('移泊时间不能小于当前时间', '#MOVETIME', { tips: [3, '#F2AE4A'] });
+                    return;
+                }
+                var idx = layer.msg('数据处理中', { icon: 16, shade: 0.03, fixed: true, time: 0 });
+                var sdata = {};
+                sdata.SHIPNAME_CN = shipsJson[SHIPNAME_CN].SHIPNAME_CN;
+                sdata.SHIPNAME_EN = SHIPNAME_CN;
+                sdata.MMSI = $('#MMSI').val();
+                sdata.IMO = $('#IMO').val();
+                sdata.CURBERTH = CURBERTH;
+                sdata.TARBERTH = TARBERTH;
+                sdata.MOVETIME = MOVETIME;
+                publish('appendData', { svn: 'NET_SERVER', path: params.path, tableName: table, type: 'post', attr: sdata, data: sdata }).then(function (res) {
+                    console.log(res);
+                    layer.close(idx);
+                    if (typeof params.then == 'function')
+                        params.then(res[0]);
+                    else {
+                        var error = res[0].error;
+                        if (error) {
+                            layer.msg(error.message || error );
+                        } else {
+                            var result = res[0].addResults[0];
+                            if (result.success) {
+                                publish('showTopMsg', '操作成功').then(function () { closeLayer(); });
+                                if(params.token) publish(params.token);
+                            }
+                            else 
+                                layer.msg(result.error.description);
+                        }
+                    }
+                });
+            });
+
+            $('#close').click(function () {
+                closeLayer();
+            });
+        });
+    </script>
+</body>
+
+</html>

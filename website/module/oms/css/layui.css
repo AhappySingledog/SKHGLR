@@ -1,0 +1,112 @@
+﻿.group {
+    display: flex;
+    flex-flow: row wrap;
+    padding: 10px 4px 8px 4px;
+    border-bottom: 1px solid rgb(217,217,217);
+    box-shadow: rgba(217,217,217, 0.3) 0px 4px 8px;
+}
+
+.group:last-child {
+    border-bottom: none;
+    box-shadow: none;
+}
+
+.layui-input {
+    height: 30px;
+    padding-left: 4px;
+    line-height: 30px;
+}
+
+.layui-form-label {
+    padding: 0;
+    line-height: 30px;
+    width: 150px;
+}
+
+.layui-input-block {
+    height: 30px;
+    margin-left: 160px;
+}
+
+.layui-form-item .layui-form-checkbox {
+    margin: 0;
+}
+
+.layui-form-item .layui-form-checkbox[lay-skin=primary] {
+    margin-top: 8px;
+}
+
+.layui-table-view .layui-table th,
+.layui-table-view .layui-table td {
+    padding: 3px 0 !important;
+}
+
+.layui-table-cell {
+    padding: 0 5px !important;
+}
+
+.layui-form-switch {
+    margin-top: 4px;
+}
+
+.layui-form-radio {
+    margin: 2px 10px 0 0;
+}
+
+.layui-form-mid {
+    padding-top: 4px !important;
+}
+
+.layui-input-block {
+    height: auto;
+}
+
+.geo {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.geo > input {
+    flex-grow:1;
+}
+
+.layui-show> li {
+    text-overflow: clip !important;
+}
+
+.layui-btn-mini {
+    height: 18px;
+    line-height: 18px;
+}
+
+.layui-table-view {
+    margin: 1px;
+}
+
+.layui-table-tool {
+    height: 31px !important;
+    padding: 2px !important;
+    overflow-y: hidden;
+}
+
+a:focus {
+    outline: none !important;
+}
+
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+    color: #666;
+    opacity: 0.5;
+}
+input:-moz-placeholder, textarea:-moz-placeholder {
+    color: #666;
+    opacity: 0.5;
+}
+input::-moz-placeholder, textarea::-moz-placeholder {
+    color: #666;
+    opacity: 0.5;
+}
+input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+    color: #666;
+    opacity: 0.5;
+}

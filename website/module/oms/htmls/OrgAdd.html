@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="../../../js/plugs/layui/layui.js"></script>
+    <link href="../../../js/plugs/layui/css/layui.css" rel="stylesheet" />
+    <link href="../css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="layui-form" lay-filter="org_select" style="margin: 4px; padding: 4px; border-bottom: 1px solid silver">
+        <div class="layui-form-item" style="margin: 0">
+            <label class="layui-form-label" style="width: 50px">请选择</label>
+            <div class="layui-input-block" style="margin-left: 60px">
+                <select name="_org_lx" lay-verify="required" lay-filter="select"></select>
+            </div>
+        </div>
+    </div>
+    <div style="padding: 4px 4px 10px 4px">
+        <form id="form"></form>
+        <div id="btns" style="text-align: center;"></div>
+    </div>
+    <script>
+        layui.use(['mform', 'layer', 'jquery'], function (mform, layer, $) {
+            mform.config({ svn: 'OMS_SERVER' });
+            var select = null;
+            $(document).bind("contextmenu", function (e) { return false; }); //禁用右键菜单
+            var params = window._dialog.params || {},
+                form = mform("#form").defualtWidth((100.0 / (params.cols || 2)) + "%").setFiledReq('loading', true).fieldCompleted(complete); //初始化表单内容
+
+            initSelect(params.lxs);
+
+            function initSelect(opts) {
+                var $select = $('select[name="_org_lx"]');
+                opts.forEach(function (val, i) { $select.append($('<option value="' + i + '">' + val.name + '</option>')); });
+                layui.form.render('select', "org_select");
+                layui.form.on('select(select)', function (data) {
+                    select = opts[data.value];
+                    form.refTable(select.tname).render();
+                });
+                if (opts.length > 0) {
+                    select = opts[0];
+                    form.refTable(opts[0].tname).render();
+                }
+            }
+
+            /**
+             * 获取完成数据后执行任务
+             */
+            function complete() {
+                form.completed(function () { });
+                var $div = $('#btns').empty();
+                $('<a class="layui-btn layui-btn-normal layui-btn-small">确认</a>').appendTo($div).click(function () { form.submit(submit); });
+                $('<a class="layui-btn layui-btn-danger layui-btn-small">关闭</a>').appendTo($div).click(function () { closeLayer(); });
+                if (params.autoSize !== false) iframeAuto2();
+            }
+
+            /**
+             * 提交表单
+             * @param data
+             */
+            function submit(data) {
+                var idx = layer.msg('数据处理中', { icon: 16, shade: 0.03, fixed: true, time: 0 }),
+                    sdata = { treeid: params.oid, type: select.lx, json: JSON.stringify(data) };
+                publish('getDataX', { svn: 'OMS_SERVER', path: "AddStruct", type: 'post', data: sdata }).then(function (res) {
+                    layer.close(idx);
+                    if (res[0].code === "10000") {
+                        if (params.token) publish(params.token);
+                        if (typeof params.callBack == 'function') params.callBack(sdata);
+                        publish('showTopMsg', res[0].message).then(function () { closeLayer(); });
+                    }
+                    else
+                        layer.msg(res[0].message);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

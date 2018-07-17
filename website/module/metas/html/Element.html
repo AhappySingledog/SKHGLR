@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="../../../js/plugs/layui/layui.js"></script>
+    <link href="../../../js/plugs/layui/css/layui.css" rel="stylesheet" />
+    <link href="../css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <div style="padding: 4px 4px 10px 4px">
+        <form id="form" style="max-height: 600px;overflow: auto;"></form>
+    </div>
+    <script>
+        layui.use(['mform', 'layer', 'jquery'], function (mform, layer, $) {
+            $(document).bind("contextmenu", function (e) { return false; });//禁用右键菜单
+            var old, params = window._dialog.params,  svn = params.svn, sub = params.sub, table =  params.tname, flg = params.where != null,//通过是否有查询条件来判断是添加还是新增 有查询条件，那么认定为更新，没有就算新增
+                form = mform("#form").refTable(table).fields(params.fields || []).unVisable('GID').setFieldConfig(params.cfg || {}).defualtWidth((100.0 / (params.cols || 2)) + "%").setFiledReq(getFreq()).setDataReq(getDreq()).fieldCompleted(complete).render(params.render); //初始化表单内容
+            
+            /**
+             * 请求参数
+             */
+            function getFreq() {
+                return { svn: svn, loading: true, path: 'table/' +  table, data: {f: 'json'}, xpath: 'fields' };
+            }
+            
+            /**
+             * 请求参数
+             */
+            function getDreq() {
+                return flg ? { svn: svn, path: 'table/' +  table + '/query', loading: true, data: { tname: table, where: params.where, page: 1, size: 1, f: 'json' }, update: update } : { loading: true };
+            }
+
+            /**
+             * 更新操作
+             * @param res
+             */
+            function update(res) {
+                return old = $.extend(res.features[0].attributes, params.attr || {});
+            }
+
+            /**
+             * 获取完成数据后执行任务
+             */
+            function complete() {
+                form.completed(function () { });
+                if (!flg && params.attr) form.refresh(params.attr);
+                var $div = $('<div style="text-align: center;"/>').appendTo($("#form").parent());
+                if (params.render.enable) {
+                    if (flg) $('<a class="layui-btn layui-btn-small">重置</a>').appendTo($div).click(function() { form.refresh(); });
+                    $('<a class="layui-btn layui-btn-normal layui-btn-small">确认</a>').appendTo($div).click(function() { form.submit(submit);});
+                }
+                $('<a class="layui-btn layui-btn-danger layui-btn-small">关闭</a>').appendTo($div).click(function () { closeLayer(); });
+                if (params.autoSize !== false) iframeAuto2();
+            }
+
+            /**
+             * 提交表单
+             * @param data
+             */
+            function submit(data) {
+                var idx = layer.msg('数据处理中', { icon: 16, shade: 0.03, fixed: true, time: 0 }),
+                    rs = flg ? { sub: 'updateData', key: 'updateResults' } : { sub: 'appendData', key: 'addResults' },
+                    sdata = typeof params.getData == 'function'
+                        ? params.getData(data, old)
+                        : old ? $.extend({ GID: old.GID || old.gid || old.id }, data) : data;
+                
+                publish(sub || rs.sub, { svn: svn, path: params.path, tableName: table, type: 'post', attr: sdata, data: sdata }).then(function (res) {
+                    layer.close(idx);
+                    if (typeof params.then == 'function')
+                        params.then(res[0]);
+                    else {
+                        var error = res[0].error;
+                        if (error) {
+                            layer.msg(error.message || error );
+                        } else {
+                            var result = res[0][rs.key][0];
+                            if (result.success) {
+                                publish('showTopMsg', '操作成功').then(function () { closeLayer(); });
+                                if(params.token) publish(params.token);
+                            }
+                            else 
+                                layer.msg(result.error.description);
+                        }
+                    }
+                }, function(res) {
+                    layer.close(idx);
+                    layer.msg('操作失败');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+﻿{
+  "proxy": [
+    {
+      "name": "py",
+      "url": "proxy.jsp",
+      "desc": "代理"
+    }
+  ],
+  "service": [
+    {
+      "name": "NET_SERVER",
+      "description": "元数据服务",
+      "url": "http://172.28.1.101:8080/ServiceEngine/rest/services/NetServer/oms",
+      "proxy": "py"
+    },
+    {
+      "name": "OMS_SERVER",
+      "description": "OMS",
+      "url": "http://172.28.1.101:8089/ServiceEngine/rest/services/OmsServer",
+      "proxy": "py"
+    },
+    {
+      "name": "SKHG_SERVER",
+      "description": "蛇口海关服务",
+      "url": "http://172.28.1.101:8089/ServiceEngine/rest/skport",
+      "proxy": "py"
+    },
+    {
+      "name": "LOADER_SERVER",
+      "description": "蛇口海关服务",
+      "url": "http://172.28.1.101:8089/ServiceEngine/rest/services/SKHGLoaderServer",
+      "proxy": "py"
+    }
+  ]
+}

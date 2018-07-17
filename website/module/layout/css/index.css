@@ -1,0 +1,204 @@
+﻿html, body {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+
+.layout {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.sidebar {
+    background: #393d49;
+}
+
+.content {
+    flex-grow: 1;
+    flex-shrink: 1;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    background: red;
+}
+
+.header {
+    height: 64px;
+    background: white;
+}
+
+.main {
+    flex-grow: 1;
+    flex-shrink: 1;
+    background: #f0f2f5;
+    position: relative;
+}
+
+.meunbox {
+    width: 300px;
+    height: 100%;
+    transition: width 0.3s;
+    position: relative;
+}
+
+.loginfo {
+    height: 64px;
+    overflow: hidden;
+}
+
+.loginfo {
+    color: white;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 64px;
+}
+
+    .loginfo > img {
+        float: left;
+        width: 32px;
+        height: 32px;
+        margin: 16px;
+    }
+
+.meun {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 64px;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    overflow: auto;
+    background: #001529;
+}
+
+    .meun ul {
+        display: none;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .meun li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .meun div {
+        padding: 12px;
+        cursor: pointer;
+        color: #a1a8b0;
+        overflow: hidden;
+        line-height: 22px;
+        height: 22px;
+    }
+
+        .meun div:hover {
+            color: white;
+        }
+
+.meun_img {
+    float: left;
+    width: 14px;
+    height: 14px;
+    margin: 4px;
+}
+
+.meun_mini_img {
+    width: 14px;
+    height: 14px;
+    margin: 4px;
+}
+
+.meun-item-active {
+    background: #1890ff;
+    color: white !important;
+}
+
+.meun-item-fold > div:after {
+    content: "⇘";
+    float: right;
+}
+
+.meun-item-expand > ul {
+    background: #000c17;
+}
+
+.meun-item-expand > div:after {
+    content: "↸";
+    float: right;
+}
+
+.meun_mini {
+    overflow: visible !important;
+}
+
+.meun_mini li {
+    position: relative;
+}
+
+    .meun_mini li:hover > ul {
+        z-index: 99999;
+        top: 0;
+        left: 100%;
+        position: absolute;
+        border: 2px solid white;
+        display: block;
+        background: #000c17;
+        border-radius: 2px;
+        animation: slideInLeft 0.1s both;
+    }
+
+    .meun_mini > li > ul div {
+        white-space: nowrap;
+    }
+
+@keyframes slideInLeft {
+    0% {
+        transform: translate3d(-100%,0,0);
+        visibility: visible
+    }
+
+    to {
+        transform: translateZ(0)
+    }
+}
+
+.layui-me-tab {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    box-sizing: border-box;
+}
+
+.layui-me-tab {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    box-sizing: border-box;
+}
+
+.layui-me-tab-content {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+}
+
+.layui-tab-item {
+    height: 100%;
+    width: 100%;
+}
